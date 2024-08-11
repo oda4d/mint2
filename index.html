@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pay with Solana</title>
+</head>
+<body>
+    <h1>Complete Your Payment</h1>
+    <p>Click the button below to pay with Solana.</p>
+    <button id="payButton">Pay with Solana</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+    <script type="text/javascript">
+        document.getElementById('payButton').addEventListener('click', async function() {
+            const provider = window.solana;
+            if (provider && provider.isPhantom) {
+                await provider.connect();
+                const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'));
+                const recipient = new solanaWeb3.PublicKey('7JPfkCfAAKLzdMGVLkU26AanKSr9V4kwRzjerWagE2MK'); // Replace with your wallet address
+                const transaction = new solanaWeb3.Transaction().add(
+                    solanaWeb3.SystemProgram.transfer({
+                        fromPubkey: provider.publicKey,
+                        toPubkey: recipient,
+                        lamports: solanaWeb3.LAMPORTS_PER_SOL * 0.1, // Replace 0.1 with the amount of SOL to charge
+                    })
+                );
+                const signature = await provider.signAndSendTransaction(transaction);
+                await connection.confirmTransaction(signature);
+                alert('Payment successful!');
+            } else {
+                alert('Phantom wallet not found. Please install it to proceed.');
+            }
+        });
+    </script>
+</body>
+</html>
